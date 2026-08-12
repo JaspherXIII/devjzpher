@@ -82,7 +82,6 @@ export default function Welcome() {
     // Section Refs for Scroll Spy
     const section1Ref = useRef<HTMLDivElement>(null);
     const section2Ref = useRef<HTMLDivElement>(null);
-    const section3Ref = useRef<HTMLDivElement>(null);
     const section4Ref = useRef<HTMLDivElement>(null);
     const section5Ref = useRef<HTMLDivElement>(null);
     const section6Ref = useRef<HTMLDivElement>(null);
@@ -90,7 +89,7 @@ export default function Welcome() {
 
     // Scroll Spy
     useEffect(() => {
-        const refs = [section1Ref, section2Ref, section3Ref, section4Ref, section5Ref, section6Ref];
+        const refs = [section1Ref, section2Ref, section4Ref, section5Ref, section6Ref];
         let animationFrame: number | null = null;
 
         const updateActiveSection = () => {
@@ -618,7 +617,7 @@ export default function Welcome() {
         cardTitle: isDark ? 'text-white' : 'text-slate-800'
     };
 
-    const sectionOrder = ['01', '02', '03', '04', '05', '06'];
+    const sectionOrder = ['01', '02', '03', '04', '05'];
 
     const showSection = (sectionId: string, direction?: 'next' | 'previous') => {
         if (sectionId === activeSection || previousSection !== null) {
@@ -639,7 +638,7 @@ export default function Welcome() {
         sectionTransitionTimer.current = setTimeout(() => {
             setPreviousSection(null);
             sectionTransitionTimer.current = null;
-        }, 850);
+        }, 520);
     };
 
     const showNextSection = () => {
@@ -698,32 +697,20 @@ export default function Welcome() {
                     }
 
                     @keyframes section-orbit-in-next {
-                        0% { opacity: 0; transform: translate3d(110%, 110%, 0); }
-                        25% { opacity: 0.35; transform: translate3d(95%, 55%, 0); }
-                        50% { opacity: 0.72; transform: translate3d(78%, 32%, 0); }
-                        75% { opacity: 0.94; transform: translate3d(42%, 8%, 0); }
-                        100% { opacity: 1; transform: translate3d(0, 0, 0); }
+                        from { opacity: 0; transform: translate3d(24px, 0, 0); }
+                        to { opacity: 1; transform: translate3d(0, 0, 0); }
                     }
                     @keyframes section-orbit-out-next {
-                        0% { opacity: 1; transform: translate3d(0, 0, 0); }
-                        25% { opacity: 0.94; transform: translate3d(-42%, 8%, 0); }
-                        50% { opacity: 0.72; transform: translate3d(-78%, 32%, 0); }
-                        75% { opacity: 0.35; transform: translate3d(-95%, 55%, 0); }
-                        100% { opacity: 0; transform: translate3d(-110%, 110%, 0); }
+                        from { opacity: 1; transform: translate3d(0, 0, 0); }
+                        to { opacity: 0; transform: translate3d(-24px, 0, 0); }
                     }
                     @keyframes section-orbit-in-previous {
-                        0% { opacity: 0; transform: translate3d(-110%, 110%, 0); }
-                        25% { opacity: 0.35; transform: translate3d(-95%, 55%, 0); }
-                        50% { opacity: 0.72; transform: translate3d(-78%, 32%, 0); }
-                        75% { opacity: 0.94; transform: translate3d(-42%, 8%, 0); }
-                        100% { opacity: 1; transform: translate3d(0, 0, 0); }
+                        from { opacity: 0; transform: translate3d(-24px, 0, 0); }
+                        to { opacity: 1; transform: translate3d(0, 0, 0); }
                     }
                     @keyframes section-orbit-out-previous {
-                        0% { opacity: 1; transform: translate3d(0, 0, 0); }
-                        25% { opacity: 0.94; transform: translate3d(42%, 8%, 0); }
-                        50% { opacity: 0.72; transform: translate3d(78%, 32%, 0); }
-                        75% { opacity: 0.35; transform: translate3d(95%, 55%, 0); }
-                        100% { opacity: 0; transform: translate3d(110%, 110%, 0); }
+                        from { opacity: 1; transform: translate3d(0, 0, 0); }
+                        to { opacity: 0; transform: translate3d(24px, 0, 0); }
                     }
 
                     @media (min-width: 1024px) {
@@ -743,23 +730,23 @@ export default function Welcome() {
                         }
                         .section-panel--idle {
                             opacity: 0;
-                            transform: translate3d(110%, 110%, 0);
+                            transform: translate3d(24px, 0, 0);
                             pointer-events: none;
                         }
                         .section-panel--enter-next {
-                            animation: section-orbit-in-next 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                            animation: section-orbit-in-next 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
                             pointer-events: auto;
                         }
                         .section-panel--exit-next {
-                            animation: section-orbit-out-next 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                            animation: section-orbit-out-next 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
                             pointer-events: none;
                         }
                         .section-panel--enter-previous {
-                            animation: section-orbit-in-previous 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                            animation: section-orbit-in-previous 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
                             pointer-events: auto;
                         }
                         .section-panel--exit-previous {
-                            animation: section-orbit-out-previous 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                            animation: section-orbit-out-previous 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
                             pointer-events: none;
                         }
                     }
@@ -776,9 +763,11 @@ export default function Welcome() {
             </Head>
 
             {/* EDITORIAL SPLIT CONTAINER */}
-            <div className={`min-h-screen w-full ${themeStyles.bg} ${themeStyles.text} sans-font text-[13.5px] transition-colors duration-500 flex flex-col`}>
+            <div className={`relative isolate flex min-h-screen w-full flex-col overflow-hidden ${themeStyles.bg} ${themeStyles.text} sans-font text-[13.5px] transition-colors duration-500`}>
+                <div aria-hidden="true" className="pointer-events-none absolute -right-40 top-24 z-0 h-[32rem] w-[32rem] rounded-full bg-indigo-500/10 blur-[140px] dark:bg-indigo-500/15" />
+                <div aria-hidden="true" className="pointer-events-none absolute -left-52 bottom-0 z-0 h-96 w-96 rounded-full bg-cyan-400/5 blur-[120px] dark:bg-cyan-400/[0.07]" />
                 
-                <div className="max-w-6xl mx-auto w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 px-6 py-8 md:py-16 items-start lg:h-screen lg:overflow-hidden">
+                <div className="relative z-10 mx-auto grid w-full max-w-[1320px] flex-1 grid-cols-1 items-start gap-8 px-6 py-8 md:py-16 lg:h-screen lg:grid-cols-12 lg:gap-16 lg:px-10 lg:overflow-hidden">
                     
                     {/* LEFT PANE: Sticky Editorial Cover (lg:col-span-5) */}
                     <header className="lg:col-span-5 lg:sticky lg:top-16 flex flex-col justify-between lg:h-[82vh] space-y-8 lg:space-y-0">
@@ -794,7 +783,7 @@ export default function Welcome() {
                         {/* Mid Cover Intro - Large display typography */}
                         <div className="space-y-6">
                             {/* Profile Picture Frame */}
-                            <div className="relative overflow-hidden h-20 w-20 rounded-2xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-100 dark:bg-white/[0.02] shadow-inner flex items-center justify-center">
+                            <div className="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-100 shadow-lg shadow-black/10 dark:border-white/[0.08] dark:bg-white/[0.02] dark:shadow-black/30">
                                 <img 
                                     src="/images/pic.png"
                                     alt="Mark Jaspher Juan Profile" 
@@ -811,6 +800,10 @@ export default function Welcome() {
                                     }}
                                 />
                             </div>
+                            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                                Available for work
+                            </div>
                             <h1 className={`text-3xl sm:text-4xl md:text-5xl font-extrabold ${themeStyles.textHeading} tracking-tight leading-[1.08] title-font`}>
                                 Mark Jaspher Juan.<br />
                                 Full-stack web developer.
@@ -825,23 +818,24 @@ export default function Welcome() {
                             {[
                                 { id: '01', label: 'SELECTED WORK' },
                                 { id: '02', label: 'TECHNICAL SKILLS' },
-                                { id: '03', label: 'GITHUB CONTRIBUTIONS' },
-                                { id: '04', label: 'EXPERIENCE & EDUCATION' },
-                                { id: '05', label: 'CERTIFICATIONS & AWARDS' },
-                                { id: '06', label: 'CONTACT' }
+                                { id: '03', label: 'EXPERIENCE & EDUCATION' },
+                                { id: '04', label: 'CERTIFICATIONS & AWARDS' },
+                                { id: '05', label: 'CONTACT' }
                             ].map((sec) => (
                                 <button
                                     key={sec.id}
                                     type="button"
                                     onClick={() => showSection(sec.id)}
                                     aria-current={activeSection === sec.id ? 'true' : undefined}
-                                    className="flex items-center gap-3.5 group text-left outline-none"
+                                    className={`group flex items-center gap-3.5 rounded-lg px-2 py-1.5 text-left outline-none transition-colors ${
+                                        activeSection === sec.id ? 'bg-indigo-500/10' : 'hover:bg-slate-900/5 dark:hover:bg-white/[0.03]'
+                                    }`}
                                 >
                                     <span className={`w-6 h-[1px] transition-all duration-300 ${
-                                        activeSection === sec.id ? themeStyles.activeLine + ' w-10' : 'bg-slate-200 dark:bg-white/10 group-hover:bg-slate-400'
+                                        activeSection === sec.id ? themeStyles.activeLine + ' w-10 shadow-[0_0_12px_rgba(99,102,241,0.9)]' : 'bg-slate-200 dark:bg-white/10 group-hover:bg-slate-400'
                                     }`} />
                                     <span className={`transition-colors duration-300 ${
-                                        activeSection === sec.id ? themeStyles.textHeading + ' font-bold' : 'group-hover:text-slate-700 dark:group-hover:text-slate-350'
+                                        activeSection === sec.id ? themeStyles.textHeading + ' font-bold' : 'group-hover:text-slate-700 dark:group-hover:text-slate-300'
                                     }`}>
                                         {sec.id} // {sec.label}
                                     </span>
@@ -919,7 +913,7 @@ export default function Welcome() {
                             data-section-id="01" 
                             className={`space-y-5 ${sectionPanelClasses('01')}`}
                         >
-                            <div className="text-[10px] tracking-widest font-mono font-bold uppercase select-none flex justify-between">
+                            <div className="flex justify-between text-[11px] font-mono font-bold uppercase tracking-widest select-none">
                                 <span>01 // SELECTED WORK</span>
                                 <span className={themeStyles.accentText}>WORKLOAD ARCHIVES</span>
                             </div>
@@ -950,16 +944,16 @@ export default function Welcome() {
                                     const imageIndex = projectImageIndexes[proj.id] ?? 0;
                                     const activeImage = proj.images[imageIndex];
                                     return (
-                                        <div key={proj.id} className="py-5 transition-all">
+                                        <div key={proj.id} className="group/project rounded-xl py-5 transition-all duration-300 hover:bg-slate-900/[0.025] dark:hover:bg-white/[0.025]">
                                             
                                             {/* Row Header trigger */}
                                             <button
                                                 onClick={() => setOpenProject(isOpen ? null : proj.id)}
-                                                className="w-full flex items-center justify-between text-left group"
+                                                className="flex w-full items-center justify-between px-3 text-left"
                                             >
                                                 <div className="space-y-1">
-                                                    <h3 className={`text-base font-bold ${themeStyles.textHeading} group-hover:text-indigo-650 dark:group-hover:text-indigo-400 transition-colors title-font`}>{proj.title}</h3>
-                                                    <div className="flex gap-2.5 items-center select-none font-mono text-[9px] text-slate-500 uppercase tracking-wider">
+                                                    <h3 className={`title-font text-base font-bold ${themeStyles.textHeading} transition-colors group-hover/project:text-indigo-650 dark:group-hover/project:text-indigo-400`}>{proj.title}</h3>
+                                                    <div className="flex items-center gap-2.5 font-mono text-[10px] uppercase tracking-wider text-slate-500 select-none">
                                                         <span className={themeStyles.accentText}>{proj.categories.join(' + ')}</span>
                                                         <span>â€¢</span>
                                                         <span className="font-bold text-amber-500">{proj.rarity}</span>
@@ -969,7 +963,7 @@ export default function Welcome() {
                                                         <span className="text-emerald-500">{proj.completion}</span>
                                                     </div>
                                                 </div>
-                                                <div className={`h-8 w-8 rounded-lg ${themeStyles.cardBg} border ${themeStyles.border} group-hover:bg-white/[0.03] flex items-center justify-center ${themeStyles.textHeading} transition-all ${isOpen ? 'rotate-180' : ''}`}>
+                                                <div className={`flex h-8 w-8 items-center justify-center rounded-lg border ${themeStyles.cardBg} ${themeStyles.border} ${themeStyles.textHeading} transition-all group-hover/project:border-indigo-500/40 group-hover/project:bg-indigo-500/10 ${isOpen ? 'rotate-180' : ''}`}>
                                                     <ChevronDown className="h-4 w-4" />
                                                 </div>
                                             </button>
@@ -1103,20 +1097,13 @@ export default function Welcome() {
                                     </div>
                                 ))}
                             </div>
-                        </section>
 
-                        {/* SECTION 03: GitHub Contributions Grid */}
-                        <section 
-                            ref={section3Ref} 
-                            data-section-id="03" 
-                            className={`space-y-5 ${sectionPanelClasses('03')}`}
-                        >
-                            <div className="text-[10px] tracking-widest font-mono font-bold uppercase select-none flex justify-between">
-                                <span>03 // GITHUB CONTRIBUTIONS</span>
-                                <span className={themeStyles.accentText}>TELEMETRY RECORD</span>
-                            </div>
-
-                            <div className={`border ${themeStyles.border} ${themeStyles.cardBg} p-4.5 rounded-2xl flex flex-col items-center shadow-sm`}>
+                            <div className="space-y-3 pt-2">
+                                <div className="flex items-center justify-between font-mono text-[10px] font-bold uppercase tracking-widest">
+                                    <span>GitHub Contributions</span>
+                                    <span className={themeStyles.accentText}>PAST 365 DAYS</span>
+                                </div>
+                                <div className={`flex flex-col items-center rounded-2xl border ${themeStyles.border} ${themeStyles.cardBg} p-4.5 shadow-sm`}>
                                 {/* The calendar image wrapped in horizontal scroll */}
                                 <div className="w-full overflow-x-auto custom-scroll pb-1.5">
                                     <div className="min-w-[650px] flex items-center justify-center select-none">
@@ -1131,39 +1118,40 @@ export default function Welcome() {
                                     <span>Sync Status: Operational</span>
                                     <span>PAST 365 DAYS DEV HISTORY</span>
                                 </div>
+                                </div>
                             </div>
                         </section>
 
-                        {/* SECTION 04: Experience Historical Logs */}
+                        {/* SECTION 03: Experience Historical Logs */}
                         <section 
                             ref={section4Ref} 
-                            data-section-id="04" 
-                            className={`space-y-6 ${sectionPanelClasses('04')}`}
+                            data-section-id="03"
+                            className={`space-y-6 ${sectionPanelClasses('03')}`}
                         >
                             <div className="text-[10px] tracking-widest font-mono font-bold uppercase select-none flex justify-between">
-                                <span>04 // EXPERIENCE &amp; EDUCATION</span>
+                                <span className="text-[11px]">03 // EXPERIENCE &amp; EDUCATION</span>
                                 <span className={themeStyles.accentText}>MILESTONE ARCHIVE</span>
                             </div>
 
-                            <div className={`space-y-6 relative before:absolute before:left-1.5 before:top-1.5 before:bottom-1.5 before:w-px ${isDark ? 'before:bg-white/[0.03]' : 'before:bg-slate-200'}`}>
+                            <div className={`relative space-y-7 before:absolute before:top-1.5 before:bottom-1.5 before:left-1.5 before:w-px ${isDark ? 'before:bg-white/[0.03]' : 'before:bg-slate-200'}`}>
                                 
-                                <div className="relative pl-6 space-y-2 font-sans">
+                                <div className="relative space-y-2.5 pl-6 font-sans">
                                     <div className={`absolute left-1 top-1.5 h-1.5 w-1.5 rounded-full ${themeStyles.dot}`} />
-                                    <div className="text-[9.5px] font-bold text-slate-500 font-mono">2024 (OJT TRAINEE)</div>
-                                    <h4 className={`font-bold text-xs title-font ${themeStyles.cardTitle}`}>On-the-job Training Programmer @ Brain IT Consultancy</h4>
-                                    <p className="leading-relaxed text-[12px] font-normal">
+                                    <div className="font-mono text-[11px] font-bold text-slate-500">2024 (OJT TRAINEE)</div>
+                                    <h4 className={`title-font text-sm font-bold ${themeStyles.cardTitle}`}>On-the-job Training Programmer @ Brain IT Consultancy</h4>
+                                    <p className="text-[13.5px] leading-relaxed font-normal">
                                         Developed custom web applications and engineered relational database schemas. Formulated scripts and automated code deploys. Awarded Outstanding On-the-job Trainee.
                                     </p>
                                 </div>
 
-                                <div className="relative pl-6 space-y-2 font-sans">
+                                <div className="relative space-y-2.5 pl-6 font-sans">
                                     <div className="absolute left-1 top-1.5 h-1.5 w-1.5 rounded-full bg-slate-350 dark:bg-white/[0.15]" />
-                                    <div className="text-[9.5px] font-bold text-slate-500 font-mono">2020 - 2024 (BSIT DEGREE)</div>
-                                    <h4 className={`font-bold text-xs title-font ${themeStyles.cardTitle}`}>Northeastern College — Bachelor of Science in Information Technology</h4>
-                                    <p className="leading-relaxed text-[12px] font-normal">
+                                    <div className="font-mono text-[11px] font-bold text-slate-500">2020 - 2024 (BSIT DEGREE)</div>
+                                    <h4 className={`title-font text-sm font-bold ${themeStyles.cardTitle}`}>Northeastern College — Bachelor of Science in Information Technology</h4>
+                                    <p className="text-[13.5px] leading-relaxed font-normal">
                                         Earned BSIT degree with active honors (Dean's Lister, Outstanding Trainee). Participated in seminar blocks covering Cybersecurity and Capstone Project Leadership.
                                     </p>
-                                    <div className="flex flex-wrap gap-1.5 pt-1 select-none text-[9.5px] font-mono text-slate-500">
+                                    <div className="flex flex-wrap gap-1.5 pt-1 font-mono text-[10.5px] text-slate-500 select-none">
                                         <span>[Credentials &amp; Training]:</span>
                                         <span className="text-indigo-500 font-bold">+ CSE Professional Level Passed</span>
                                         <span>•</span>
@@ -1171,20 +1159,20 @@ export default function Welcome() {
                                     </div>
                                 </div>
 
-                                <div className="relative pl-6 space-y-2 font-sans">
+                                <div className="relative space-y-2.5 pl-6 font-sans">
                                     <div className="absolute left-1 top-1.5 h-1.5 w-1.5 rounded-full bg-slate-205 dark:bg-white/[0.1]" />
-                                    <div className="text-[9.5px] font-bold text-slate-500 font-mono">2020 (CSS CERTIFICATION)</div>
-                                    <h4 className={`font-bold text-xs title-font ${themeStyles.cardTitle}`}>TESDA accredited Center — Computer System Servicing NC II</h4>
-                                    <p className="leading-relaxed text-[12px] font-normal">
+                                    <div className="font-mono text-[11px] font-bold text-slate-500">2020 (CSS CERTIFICATION)</div>
+                                    <h4 className={`title-font text-sm font-bold ${themeStyles.cardTitle}`}>TESDA accredited Center — Computer System Servicing NC II</h4>
+                                    <p className="text-[13.5px] leading-relaxed font-normal">
                                         Completed strict assessment parameters for network system servicing. Configured hardware allocations, local network topologies, and router configurations.
                                     </p>
                                 </div>
 
-                                <div className="relative pl-6 space-y-2 font-sans">
+                                <div className="relative space-y-2.5 pl-6 font-sans">
                                     <div className="absolute left-1 top-1.5 h-1.5 w-1.5 rounded-full bg-slate-205 dark:bg-white/[0.05]" />
-                                    <div className="text-[9.5px] font-bold text-slate-500 font-mono">2019 (HIGH SCHOOL IMMERSION)</div>
-                                    <h4 className={`font-bold text-xs title-font ${themeStyles.cardTitle}`}>Work Immersion Trainee @ PhilHealth Office</h4>
-                                    <p className="leading-relaxed text-[12px] font-normal">
+                                    <div className="font-mono text-[11px] font-bold text-slate-500">2019 (HIGH SCHOOL IMMERSION)</div>
+                                    <h4 className={`title-font text-sm font-bold ${themeStyles.cardTitle}`}>Work Immersion Trainee @ PhilHealth Office</h4>
+                                    <p className="text-[13.5px] leading-relaxed font-normal">
                                         Assisted in data entry operations, hardware inspection logs, and basic office network support workflows.
                                     </p>
                                 </div>
@@ -1192,14 +1180,14 @@ export default function Welcome() {
                             </div>
                         </section>
 
-                        {/* SECTION 05: Certifications and Achievements */}
+                        {/* SECTION 04: Certifications and Achievements */}
                         <section 
                             ref={section5Ref} 
-                            data-section-id="05" 
-                            className={`space-y-6 ${sectionPanelClasses('05')}`}
+                            data-section-id="04"
+                            className={`space-y-6 ${sectionPanelClasses('04')}`}
                         >
                             <div className="text-[10px] tracking-widest font-mono font-bold uppercase select-none flex justify-between">
-                                <span>05 // CERTIFICATIONS &amp; AWARDS</span>
+                                <span>04 // CERTIFICATIONS &amp; AWARDS</span>
                                 <span className={themeStyles.accentText}>VERIFIED CREDENTIALS</span>
                             </div>
 
@@ -1223,17 +1211,6 @@ export default function Welcome() {
                                     <h4 className={`font-bold text-xs ${themeStyles.cardTitle}`}>Computer System Servicing NC II</h4>
                                     <p className="text-[11.5px] text-slate-500 dark:text-slate-400 leading-relaxed">
                                         TESDA Certified Competency in Computer System Servicing (2023). Competent in OS setup, hardware diagnostics, and network configuration.
-                                    </p>
-                                </div>
-
-                                <div className={`border ${themeStyles.border} ${themeStyles.cardBg} p-4 rounded-xl space-y-2 hover:border-slate-300 dark:hover:border-white/10 transition-colors shadow-sm`}>
-                                    <div className="flex items-center gap-2 text-indigo-650 dark:text-indigo-400 font-mono">
-                                        <CheckCircle className="h-4 w-4" />
-                                        <span className="text-[9px] font-bold uppercase tracking-wider">ACADEMIC DISTINCTION</span>
-                                    </div>
-                                    <h4 className={`font-bold text-xs ${themeStyles.cardTitle}`}>Dean's Lister Honor</h4>
-                                    <p className="text-[11.5px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                                        Achieved Dean's Lister distinction at Northeastern College during both the 1st and 2nd semesters of the academic year 2023.
                                     </p>
                                 </div>
 
@@ -1270,14 +1247,14 @@ export default function Welcome() {
                             </div>
                         </section>
 
-                        {/* SECTION 06: Minimal Checkpoint Form */}
+                        {/* SECTION 05: Minimal Checkpoint Form */}
                         <section 
                             ref={section6Ref} 
-                            data-section-id="06" 
-                            className={`space-y-6 ${sectionPanelClasses('06')}`}
+                            data-section-id="05"
+                            className={`space-y-6 ${sectionPanelClasses('05')}`}
                         >
                             <div className="text-[10px] tracking-widest font-mono font-bold uppercase select-none flex justify-between">
-                                <span>06 // CONTACT</span>
+                                <span>05 // CONTACT</span>
                                 <span className={themeStyles.accentText}>COMMUNICATION NODE</span>
                             </div>
 
