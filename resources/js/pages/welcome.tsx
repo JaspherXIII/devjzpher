@@ -793,7 +793,7 @@ export default function Welcome() {
                             </div>
                             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-                                Web System Administrator in Northeastern College
+                                Web System Administrator at Northeastern College
                             </div>
                             <h1 className={`text-3xl sm:text-4xl md:text-5xl font-extrabold ${themeStyles.textHeading} tracking-tight leading-[1.08] title-font`}>
                                 Mark Jaspher Juan.<br />
