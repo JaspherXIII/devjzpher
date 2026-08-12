@@ -639,7 +639,7 @@ export default function Welcome() {
         sectionTransitionTimer.current = setTimeout(() => {
             setPreviousSection(null);
             sectionTransitionTimer.current = null;
-        }, 600);
+        }, 850);
     };
 
     const showNextSection = () => {
@@ -697,21 +697,33 @@ export default function Welcome() {
                         background: rgba(255, 255, 255, 0.1);
                     }
 
-                    @keyframes section-enter-from-bottom {
-                        from { opacity: 0; transform: translateY(100%); }
-                        to { opacity: 1; transform: translateY(0); }
+                    @keyframes section-orbit-in-next {
+                        0% { opacity: 0; transform: translate3d(110%, 110%, 0); }
+                        25% { opacity: 0.35; transform: translate3d(95%, 55%, 0); }
+                        50% { opacity: 0.72; transform: translate3d(78%, 32%, 0); }
+                        75% { opacity: 0.94; transform: translate3d(42%, 8%, 0); }
+                        100% { opacity: 1; transform: translate3d(0, 0, 0); }
                     }
-                    @keyframes section-exit-to-top {
-                        from { opacity: 1; transform: translateY(0); }
-                        to { opacity: 0; transform: translateY(-100%); }
+                    @keyframes section-orbit-out-next {
+                        0% { opacity: 1; transform: translate3d(0, 0, 0); }
+                        25% { opacity: 0.94; transform: translate3d(-42%, 8%, 0); }
+                        50% { opacity: 0.72; transform: translate3d(-78%, 32%, 0); }
+                        75% { opacity: 0.35; transform: translate3d(-95%, 55%, 0); }
+                        100% { opacity: 0; transform: translate3d(-110%, 110%, 0); }
                     }
-                    @keyframes section-enter-from-top {
-                        from { opacity: 0; transform: translateY(-100%); }
-                        to { opacity: 1; transform: translateY(0); }
+                    @keyframes section-orbit-in-previous {
+                        0% { opacity: 0; transform: translate3d(-110%, 110%, 0); }
+                        25% { opacity: 0.35; transform: translate3d(-95%, 55%, 0); }
+                        50% { opacity: 0.72; transform: translate3d(-78%, 32%, 0); }
+                        75% { opacity: 0.94; transform: translate3d(-42%, 8%, 0); }
+                        100% { opacity: 1; transform: translate3d(0, 0, 0); }
                     }
-                    @keyframes section-exit-to-bottom {
-                        from { opacity: 1; transform: translateY(0); }
-                        to { opacity: 0; transform: translateY(100%); }
+                    @keyframes section-orbit-out-previous {
+                        0% { opacity: 1; transform: translate3d(0, 0, 0); }
+                        25% { opacity: 0.94; transform: translate3d(42%, 8%, 0); }
+                        50% { opacity: 0.72; transform: translate3d(78%, 32%, 0); }
+                        75% { opacity: 0.35; transform: translate3d(95%, 55%, 0); }
+                        100% { opacity: 0; transform: translate3d(110%, 110%, 0); }
                     }
 
                     @media (min-width: 1024px) {
@@ -722,32 +734,42 @@ export default function Welcome() {
                             padding-right: 0.75rem;
                             padding-bottom: 5rem;
                             will-change: transform, opacity;
+                            backface-visibility: hidden;
                         }
                         .section-panel--active {
                             opacity: 1;
-                            transform: translateY(0);
+                            transform: translate3d(0, 0, 0);
                             pointer-events: auto;
                         }
                         .section-panel--idle {
                             opacity: 0;
-                            transform: translateY(100%);
+                            transform: translate3d(110%, 110%, 0);
                             pointer-events: none;
                         }
                         .section-panel--enter-next {
-                            animation: section-enter-from-bottom 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                            animation: section-orbit-in-next 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
                             pointer-events: auto;
                         }
                         .section-panel--exit-next {
-                            animation: section-exit-to-top 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                            animation: section-orbit-out-next 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
                             pointer-events: none;
                         }
                         .section-panel--enter-previous {
-                            animation: section-enter-from-top 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                            animation: section-orbit-in-previous 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
                             pointer-events: auto;
                         }
                         .section-panel--exit-previous {
-                            animation: section-exit-to-bottom 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                            animation: section-orbit-out-previous 850ms cubic-bezier(0.22, 1, 0.36, 1) both;
                             pointer-events: none;
+                        }
+                    }
+
+                    @media (prefers-reduced-motion: reduce) {
+                        .section-panel--enter-next,
+                        .section-panel--exit-next,
+                        .section-panel--enter-previous,
+                        .section-panel--exit-previous {
+                            animation-duration: 1ms;
                         }
                     }
                 `}</style>
@@ -774,7 +796,7 @@ export default function Welcome() {
                             {/* Profile Picture Frame */}
                             <div className="relative overflow-hidden h-20 w-20 rounded-2xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-100 dark:bg-white/[0.02] shadow-inner flex items-center justify-center">
                                 <img 
-                                    src="/images/profile.jpg" 
+                                    src="/images/pic.png"
                                     alt="Mark Jaspher Juan Profile" 
                                     className="h-full w-full object-cover"
                                     onError={(e) => {
