@@ -766,7 +766,7 @@ export default function Welcome() {
                         {/* Upper Header Brand & Theme Controls */}
                         <div className="flex items-center justify-between select-none">
                             <span className={`font-extrabold text-[15px] tracking-tight ${themeStyles.textHeading} title-font`}>
-                                markjaspher.dev
+                                devjzpher
                             </span>
                             <AppearanceToggleDropdown className="text-slate-400 shrink-0" />
                         </div>
