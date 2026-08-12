@@ -834,34 +834,6 @@ export default function Welcome() {
                             ))}
                         </nav>
 
-                        {/* SLA Credentials Telemetry Card */}
-                        <div className={`rounded-xl border ${themeStyles.border} ${themeStyles.cardBg} p-3.5 space-y-2.5 max-w-xs shadow-sm select-none`}>
-                            <div className="flex items-center justify-between text-[9px] font-mono text-slate-500">
-                                <span className="flex items-center gap-1.5 font-bold uppercase">
-                                    <Activity className="h-3 w-3 text-emerald-500 animate-pulse" /> CREDENTIALS
-                                </span>
-                                <span className="text-emerald-500 font-bold font-mono">VERIFIED</span>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3 text-[10.5px]">
-                                <div className="space-y-0.5">
-                                    <span className="text-[8.5px] text-slate-500 font-mono block leading-none">EDUCATION DEGREE</span>
-                                    <span className={`font-bold font-mono ${themeStyles.textHeading}`}>BSIT Degree</span>
-                                </div>
-                                <div className="space-y-0.5">
-                                    <span className="text-[8.5px] text-slate-500 font-mono block leading-none">ELIGIBILITY KEYS</span>
-                                    <span className={`font-bold font-mono ${themeStyles.textHeading}`}>CSE Professional</span>
-                                </div>
-                                <div className="space-y-0.5">
-                                    <span className="text-[8.5px] text-slate-500 font-mono block leading-none">NC II TELEMETRY</span>
-                                    <span className={`font-bold font-mono ${themeStyles.textHeading}`}>TESDA CSS NCII</span>
-                                </div>
-                                <div className="space-y-0.5">
-                                    <span className="text-[8.5px] text-slate-500 font-mono block leading-none">OJT LOG STATUS</span>
-                                    <span className={`font-bold font-mono ${themeStyles.textHeading}`}>Outstanding OJT</span>
-                                </div>
-                            </div>
-                        </div>
-
                         {/* Social linkages & download endpoints */}
                         <div className={`flex flex-wrap items-center gap-4 select-none pt-4 border-t ${themeStyles.border}`}>
                             <a 
