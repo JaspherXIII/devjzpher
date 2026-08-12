@@ -811,7 +811,7 @@ export default function Welcome() {
                                 { id: '02', label: 'TECHNICAL SKILLS' },
                                 { id: '03', label: 'EXPERIENCE & EDUCATION' },
                                 { id: '04', label: 'CERTIFICATIONS & AWARDS' },
-                                { id: '05', label: 'CONTACT' }
+
                             ].map((sec) => (
                                 <button
                                     key={sec.id}
@@ -834,15 +834,8 @@ export default function Welcome() {
                             ))}
                         </nav>
 
-                        {/* Social linkages & download endpoints */}
+                        {/* Social linkages */}
                         <div className={`flex flex-wrap items-center gap-4 select-none pt-4 border-t ${themeStyles.border}`}>
-                            <a 
-                                href="/resume.pdf" 
-                                download 
-                                className={`inline-flex items-center gap-2 px-4 py-2 ${isDark ? 'bg-white text-black hover:bg-slate-100' : 'bg-slate-900 text-white hover:bg-slate-800'} rounded-lg font-bold text-[10.5px] uppercase tracking-wider transition-all shadow-sm`}
-                            >
-                                <Download className="h-3.5 w-3.5" /> Download PDF Resume
-                            </a>
                             <div className="flex gap-2">
                                 <a 
                                     href="https://github.com/JaspherXIII" 
@@ -1211,94 +1204,7 @@ export default function Welcome() {
                         </section>
 
                         {/* SECTION 05: Minimal Checkpoint Form */}
-                        <section 
-                            ref={section6Ref} 
-                            data-section-id="05"
-                            className={`space-y-6 ${sectionPanelClasses('05')}`}
-                        >
-                            <div className="text-[10px] tracking-widest font-mono font-bold uppercase select-none flex justify-between">
-                                <span>05 // CONTACT</span>
-                                <span className={themeStyles.accentText}>COMMUNICATION NODE</span>
-                            </div>
 
-                            {formSubmitted ? (
-                                <div className={`border ${themeStyles.border} ${themeStyles.cardBg} p-8 rounded-2xl flex flex-col items-center justify-center text-center space-y-4 font-sans select-none animate-in fade-in duration-200`}>
-                                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-sm shadow-emerald-500/10">
-                                        <CheckCircle className="h-5 w-5" />
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <h4 className={`text-[11px] font-bold uppercase font-mono ${themeStyles.cardTitle}`}>checkpoint // synced</h4>
-                                        <p className="text-[11.5px] text-slate-555 dark:text-slate-400 max-w-xs leading-relaxed">
-                                            Payload sync successful. Telemetry locked. I will dispatch replies to your email endpoint.
-                                        </p>
-                                    </div>
-                                    <button
-                                        onClick={() => setFormSubmitted(false)}
-                                        className={`px-4.5 py-2 border ${themeStyles.border} ${themeStyles.btnSub} rounded-lg text-[10px] font-bold transition-all font-mono shadow-sm`}
-                                    >
-                                        Transmit new state
-                                    </button>
-                                </div>
-                            ) : (
-                                <form onSubmit={handleSaveSubmit} className={`space-y-6 font-mono text-[10px] border ${themeStyles.border} ${themeStyles.cardBg} p-6 md:p-8 rounded-2xl shadow-sm`}>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label htmlFor="name" className="font-bold text-slate-500 uppercase text-[8.5px]">Sender Name</label>
-                                            <input
-                                                id="name"
-                                                type="text"
-                                                required
-                                                value={formData.name}
-                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                placeholder="Enter name"
-                                                className={`w-full bg-transparent border-0 border-b ${themeStyles.inputBorder} pb-2 ${themeStyles.inputText} text-[12px] focus:ring-0 focus:outline-none transition-all font-sans`}
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label htmlFor="email" className="font-bold text-slate-500 uppercase text-[8.5px]">Email Address</label>
-                                            <input
-                                                id="email"
-                                                type="email"
-                                                required
-                                                value={formData.email}
-                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                placeholder="Enter email"
-                                                className={`w-full bg-transparent border-0 border-b ${themeStyles.inputBorder} pb-2 ${themeStyles.inputText} text-[12px] focus:ring-0 focus:outline-none transition-all font-sans`}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label htmlFor="message" className="font-bold text-slate-500 uppercase text-[8.5px]">Message Payload</label>
-                                        <textarea
-                                                id="message"
-                                                required
-                                                rows={4}
-                                                value={formData.message}
-                                                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                                placeholder="Write details..."
-                                                className={`w-full bg-transparent border-0 border-b ${themeStyles.inputBorder} pb-2 ${themeStyles.inputText} text-[12px] resize-none focus:ring-0 focus:outline-none transition-all font-sans`}
-                                        />
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        disabled={isSaving}
-                                        className={`w-full inline-flex h-11 items-center justify-center rounded-xl ${themeStyles.btnMain} shadow transition-all font-bold uppercase tracking-wider select-none text-[10.5px]`}
-                                    >
-                                        {isSaving ? (
-                                            <span className="flex items-center gap-1.5 font-mono">
-                                                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-900 dark:border-white border-t-transparent" />
-                                                    Writing state...
-                                            </span>
-                                        ) : (
-                                            <span className="flex items-center gap-1.5">
-                                                <Send className="h-3.5 w-3.5 fill-current" /> Save checkpoint
-                                            </span>
-                                        )}
-                                    </button>
-                                </form>
-                            )}
-                        </section>
 
                         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 hidden items-end justify-between bg-gradient-to-t from-white via-white/95 to-transparent pb-1 pt-10 dark:from-[#05070a] dark:via-[#05070a]/95 lg:flex">
                             <button
