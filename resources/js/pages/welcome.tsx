@@ -1,6 +1,4 @@
 import AppearanceToggleDropdown from '@/components/appearance-dropdown';
-import { type SharedData } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
 import {
     Github,
     Linkedin,
@@ -47,7 +45,6 @@ interface Project {
 }
 
 export default function Welcome() {
-    const { auth } = usePage<SharedData>().props;
     const [activeSection, setActiveSection] = useState('01');
     const [previousSection, setPreviousSection] = useState<string | null>(null);
     const [sectionDirection, setSectionDirection] = useState<'next' | 'previous'>('next');
@@ -667,100 +664,94 @@ export default function Welcome() {
 
     return (
         <>
-            <Head title="Mark Jaspher Juan | Full-Stack Web Developer Portfolio">
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+            <style>{`
+                .sans-font {
+                    font-family: 'Instrument Sans', sans-serif;
+                }
+                .title-font {
+                    font-family: 'Outfit', sans-serif;
+                }
                 
-                <style>{`
-                    .sans-font {
-                        font-family: 'Instrument Sans', sans-serif;
-                    }
-                    .title-font {
-                        font-family: 'Outfit', sans-serif;
-                    }
-                    
-                    /* Custom scrollbars */
-                    .custom-scroll::-webkit-scrollbar {
-                        width: 4px;
-                        height: 4px;
-                    }
-                    .custom-scroll::-webkit-scrollbar-track {
-                        background: transparent;
-                    }
-                    .custom-scroll::-webkit-scrollbar-thumb {
-                        background: rgba(255, 255, 255, 0.05);
-                        border-radius: 2px;
-                    }
-                    .custom-scroll::-webkit-scrollbar-thumb:hover {
-                        background: rgba(255, 255, 255, 0.1);
-                    }
+                /* Custom scrollbars */
+                .custom-scroll::-webkit-scrollbar {
+                    width: 4px;
+                    height: 4px;
+                }
+                .custom-scroll::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-scroll::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: 2px;
+                }
+                .custom-scroll::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                }
 
-                    @keyframes section-orbit-in-next {
-                        from { opacity: 0; transform: translate3d(24px, 0, 0); }
-                        to { opacity: 1; transform: translate3d(0, 0, 0); }
-                    }
-                    @keyframes section-orbit-out-next {
-                        from { opacity: 1; transform: translate3d(0, 0, 0); }
-                        to { opacity: 0; transform: translate3d(-24px, 0, 0); }
-                    }
-                    @keyframes section-orbit-in-previous {
-                        from { opacity: 0; transform: translate3d(-24px, 0, 0); }
-                        to { opacity: 1; transform: translate3d(0, 0, 0); }
-                    }
-                    @keyframes section-orbit-out-previous {
-                        from { opacity: 1; transform: translate3d(0, 0, 0); }
-                        to { opacity: 0; transform: translate3d(24px, 0, 0); }
-                    }
+                @keyframes section-orbit-in-next {
+                    from { opacity: 0; transform: translate3d(24px, 0, 0); }
+                    to { opacity: 1; transform: translate3d(0, 0, 0); }
+                }
+                @keyframes section-orbit-out-next {
+                    from { opacity: 1; transform: translate3d(0, 0, 0); }
+                    to { opacity: 0; transform: translate3d(-24px, 0, 0); }
+                }
+                @keyframes section-orbit-in-previous {
+                    from { opacity: 0; transform: translate3d(-24px, 0, 0); }
+                    to { opacity: 1; transform: translate3d(0, 0, 0); }
+                }
+                @keyframes section-orbit-out-previous {
+                    from { opacity: 1; transform: translate3d(0, 0, 0); }
+                    to { opacity: 0; transform: translate3d(24px, 0, 0); }
+                }
 
-                    @media (min-width: 1024px) {
-                        .section-panel {
-                            position: absolute;
-                            inset: 0;
-                            overflow-y: auto;
-                            padding-right: 0.75rem;
-                            padding-bottom: 5rem;
-                            will-change: transform, opacity;
-                            backface-visibility: hidden;
-                        }
-                        .section-panel--active {
-                            opacity: 1;
-                            transform: translate3d(0, 0, 0);
-                            pointer-events: auto;
-                        }
-                        .section-panel--idle {
-                            opacity: 0;
-                            transform: translate3d(24px, 0, 0);
-                            pointer-events: none;
-                        }
-                        .section-panel--enter-next {
-                            animation: section-orbit-in-next 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
-                            pointer-events: auto;
-                        }
-                        .section-panel--exit-next {
-                            animation: section-orbit-out-next 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
-                            pointer-events: none;
-                        }
-                        .section-panel--enter-previous {
-                            animation: section-orbit-in-previous 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
-                            pointer-events: auto;
-                        }
-                        .section-panel--exit-previous {
-                            animation: section-orbit-out-previous 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
-                            pointer-events: none;
-                        }
+                @media (min-width: 1024px) {
+                    .section-panel {
+                        position: absolute;
+                        inset: 0;
+                        overflow-y: auto;
+                        padding-right: 0.75rem;
+                        padding-bottom: 5rem;
+                        will-change: transform, opacity;
+                        backface-visibility: hidden;
                     }
+                    .section-panel--active {
+                        opacity: 1;
+                        transform: translate3d(0, 0, 0);
+                        pointer-events: auto;
+                    }
+                    .section-panel--idle {
+                        opacity: 0;
+                        transform: translate3d(24px, 0, 0);
+                        pointer-events: none;
+                    }
+                    .section-panel--enter-next {
+                        animation: section-orbit-in-next 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+                        pointer-events: auto;
+                    }
+                    .section-panel--exit-next {
+                        animation: section-orbit-out-next 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+                        pointer-events: none;
+                    }
+                    .section-panel--enter-previous {
+                        animation: section-orbit-in-previous 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+                        pointer-events: auto;
+                    }
+                    .section-panel--exit-previous {
+                        animation: section-orbit-out-previous 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+                        pointer-events: none;
+                    }
+                }
 
-                    @media (prefers-reduced-motion: reduce) {
-                        .section-panel--enter-next,
-                        .section-panel--exit-next,
-                        .section-panel--enter-previous,
-                        .section-panel--exit-previous {
-                            animation-duration: 1ms;
-                        }
+                @media (prefers-reduced-motion: reduce) {
+                    .section-panel--enter-next,
+                    .section-panel--exit-next,
+                    .section-panel--enter-previous,
+                    .section-panel--exit-previous {
+                        animation-duration: 1ms;
                     }
-                `}</style>
-            </Head>
+                }
+            `}</style>
 
             {/* EDITORIAL SPLIT CONTAINER */}
             <div className={`relative isolate flex min-h-screen w-full flex-col overflow-hidden ${themeStyles.bg} ${themeStyles.text} sans-font text-[13.5px] transition-colors duration-500`}>
