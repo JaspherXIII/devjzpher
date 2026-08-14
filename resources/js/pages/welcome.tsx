@@ -4,12 +4,10 @@ import {
     Linkedin,
     ExternalLink,
     Send,
-    Download,
     ChevronDown,
     ChevronLeft,
     ChevronRight,
     ArrowUpRight,
-    CheckCircle,
     Activity,
     BadgeCheck,
     Mail,
@@ -46,12 +44,22 @@ interface Project {
     completion: string;
 }
 
+const SECTION_ORDER = ['01', '02', '03', '04'];
+const PROJECTS_PER_PAGE = 3;
+const SECTION_SLUGS: Record<string, string> = {
+    '01': 'projects',
+    '02': 'skills',
+    '03': 'experience',
+    '04': 'credentials',
+};
+
 export default function Welcome() {
     const [activeSection, setActiveSection] = useState('01');
     const [previousSection, setPreviousSection] = useState<string | null>(null);
     const [sectionDirection, setSectionDirection] = useState<'next' | 'previous'>('next');
     const [openProject, setOpenProject] = useState<string | null>('tapat');
     const [selectedProjectCategory, setSelectedProjectCategory] = useState('All');
+    const [currentProjectPage, setCurrentProjectPage] = useState(1);
     const [projectImageIndexes, setProjectImageIndexes] = useState<Record<string, number>>({});
     const [lightbox, setLightbox] = useState<{ projectId: string; imageIndex: number } | null>(null);
 
@@ -386,6 +394,22 @@ export default function Welcome() {
     const filteredProjects = selectedProjectCategory === 'All'
         ? projects
         : projects.filter((project) => project.categories.includes(selectedProjectCategory));
+    const projectPageCount = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
+    const projectPageStart = (currentProjectPage - 1) * PROJECTS_PER_PAGE;
+    const visibleProjects = filteredProjects.slice(projectPageStart, projectPageStart + PROJECTS_PER_PAGE);
+
+    const changeProjectPage = (page: number) => {
+        setCurrentProjectPage(page);
+        setOpenProject(null);
+
+        window.requestAnimationFrame(() => {
+            if (window.matchMedia('(min-width: 1024px)').matches) {
+                section1Ref.current?.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                section1Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    };
 
     const lightboxProject = lightbox ? projects.find((project) => project.id === lightbox.projectId) : undefined;
     const lightboxImage = lightboxProject && lightbox ? lightboxProject.images[lightbox.imageIndex] : undefined;
@@ -424,7 +448,7 @@ export default function Welcome() {
             document.body.style.overflow = originalOverflow;
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [lightbox]);
+    });
 
     // Technical Stack (Updated with 24 skills, CDN references, and custom SVGs)
     const skills: Skill[] = [
@@ -597,8 +621,6 @@ export default function Welcome() {
         cardTitle: isDark ? 'text-white' : 'text-slate-800'
     };
 
-    const sectionOrder = ['01', '02', '03', '04'];
-
     const showSection = (sectionId: string, direction?: 'next' | 'previous') => {
         if (sectionId === activeSection || previousSection !== null) {
             return;
@@ -609,7 +631,7 @@ export default function Welcome() {
         }
 
         const resolvedDirection = direction ?? (
-            sectionOrder.indexOf(sectionId) > sectionOrder.indexOf(activeSection) ? 'next' : 'previous'
+            SECTION_ORDER.indexOf(sectionId) > SECTION_ORDER.indexOf(activeSection) ? 'next' : 'previous'
         );
 
         setPreviousSection(activeSection);
@@ -621,15 +643,82 @@ export default function Welcome() {
         }, 440);
     };
 
+    const navigateToSection = (sectionId: string, direction?: 'next' | 'previous') => {
+        if (window.matchMedia('(min-width: 1024px)').matches) {
+            showSection(sectionId, direction);
+            return;
+        }
+
+        const refs: Record<string, React.RefObject<HTMLDivElement | null>> = {
+            '01': section1Ref,
+            '02': section2Ref,
+            '03': section4Ref,
+            '04': section5Ref,
+        };
+
+        setActiveSection(sectionId);
+        refs[sectionId]?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     const showNextSection = () => {
-        const currentIndex = sectionOrder.indexOf(activeSection);
-        showSection(sectionOrder[(currentIndex + 1) % sectionOrder.length], 'next');
+        const currentIndex = SECTION_ORDER.indexOf(activeSection);
+        navigateToSection(SECTION_ORDER[(currentIndex + 1) % SECTION_ORDER.length], 'next');
     };
 
     const showPreviousSection = () => {
-        const currentIndex = sectionOrder.indexOf(activeSection);
-        showSection(sectionOrder[(currentIndex - 1 + sectionOrder.length) % sectionOrder.length], 'previous');
+        const currentIndex = SECTION_ORDER.indexOf(activeSection);
+        navigateToSection(SECTION_ORDER[(currentIndex - 1 + SECTION_ORDER.length) % SECTION_ORDER.length], 'previous');
     };
+
+    useEffect(() => {
+        const sectionFromHash = Object.entries(SECTION_SLUGS).find(([, slug]) => `#${slug}` === window.location.hash)?.[0];
+
+        if (!sectionFromHash) return;
+
+        setActiveSection(sectionFromHash);
+
+        if (!window.matchMedia('(min-width: 1024px)').matches) {
+            window.requestAnimationFrame(() => {
+                const refs: Record<string, React.RefObject<HTMLDivElement | null>> = {
+                    '01': section1Ref,
+                    '02': section2Ref,
+                    '03': section4Ref,
+                    '04': section5Ref,
+                };
+                refs[sectionFromHash]?.current?.scrollIntoView({ block: 'start' });
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        const slug = SECTION_SLUGS[activeSection];
+
+        if (slug && window.location.hash !== `#${slug}`) {
+            window.history.replaceState(null, '', `#${slug}`);
+        }
+    }, [activeSection]);
+
+    useEffect(() => {
+        const handleSectionKeys = (event: KeyboardEvent) => {
+            if (!window.matchMedia('(min-width: 1024px)').matches || previousSection !== null) return;
+
+            const target = event.target as HTMLElement | null;
+            if (target?.matches('input, textarea, select, button, a, [contenteditable="true"]')) return;
+
+            if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+                event.preventDefault();
+                showNextSection();
+            }
+
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                showPreviousSection();
+            }
+        };
+
+        window.addEventListener('keydown', handleSectionKeys);
+        return () => window.removeEventListener('keydown', handleSectionKeys);
+    });
 
     const sectionPanelClasses = (sectionId: string) => {
         let animationClass = 'section-panel--idle';
@@ -800,6 +889,9 @@ export default function Welcome() {
                                 <img 
                                     src="/images/pic.png"
                                     alt="Mark Jaspher Juan Profile" 
+                                    width="112"
+                                    height="112"
+                                    fetchPriority="high"
                                     className="h-full w-full object-cover"
                                     onError={(e) => {
                                         e.currentTarget.style.display = 'none';
@@ -824,6 +916,15 @@ export default function Welcome() {
                             <p className="text-sm max-w-sm leading-relaxed">
                                 Eager to build innovative, responsive web solutions while continuously expanding front-end and back-end technical capabilities.
                             </p>
+                            <div className="flex flex-wrap gap-3">
+                                <a
+                                    href="mailto:devjzpher@northeasterncollege.edu.ph"
+                                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-500/20 transition-all hover:-translate-y-0.5 hover:bg-indigo-600 hover:shadow-indigo-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/70 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#05070a]"
+                                >
+                                    <Send className="h-3.5 w-3.5" />
+                                    Let&apos;s work together
+                                </a>
+                            </div>
                         </div>
 
                         {/* Section index indicator - Scroll Spy mapping */}
@@ -838,7 +939,7 @@ export default function Welcome() {
                                 <button
                                     key={sec.id}
                                     type="button"
-                                    onClick={() => showSection(sec.id)}
+                                    onClick={() => navigateToSection(sec.id)}
                                     aria-current={activeSection === sec.id ? 'true' : undefined}
                                     className={`group flex items-center gap-3.5 rounded-lg px-2 py-1.5 text-left outline-none transition-colors ${
                                         activeSection === sec.id ? 'bg-indigo-500/10' : 'hover:bg-slate-900/5 dark:hover:bg-white/[0.03]'
@@ -936,6 +1037,7 @@ export default function Welcome() {
                                         onClick={() => {
                                             setSelectedProjectCategory(category);
                                             setOpenProject(null);
+                                            setCurrentProjectPage(1);
                                         }}
                                         className={`rounded-full border px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-wider transition ${
                                             selectedProjectCategory === category
@@ -949,7 +1051,7 @@ export default function Welcome() {
                             </div>
 
                             <div className={`border-t ${themeStyles.border} divide-y ${themeStyles.divider}`}>
-                                {filteredProjects.map((proj) => {
+                                {visibleProjects.map((proj, projectIndex) => {
                                     const isOpen = openProject === proj.id;
                                     const imageIndex = projectImageIndexes[proj.id] ?? 0;
                                     const activeImage = proj.images[imageIndex];
@@ -958,12 +1060,30 @@ export default function Welcome() {
                                             
                                             {/* Row Header trigger */}
                                             <button
+                                                type="button"
                                                 onClick={() => setOpenProject(isOpen ? null : proj.id)}
-                                                className="flex w-full items-center justify-between px-3 text-left"
+                                                className="flex w-full items-center justify-between gap-4 px-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60"
+                                                aria-expanded={isOpen}
                                             >
                                                 <div className="space-y-1">
-                                                    <h3 className={`title-font text-base font-bold ${themeStyles.textHeading} transition-colors group-hover/project:text-indigo-650 dark:group-hover/project:text-indigo-400`}>{proj.title}</h3>
-                                                    <div className="flex items-center gap-2.5 font-mono text-[10px] uppercase tracking-wider text-slate-500 select-none">
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                        <h3 className={`title-font text-base font-bold ${themeStyles.textHeading} transition-colors group-hover/project:text-indigo-650 dark:group-hover/project:text-indigo-400`}>{proj.title}</h3>
+                                                        {selectedProjectCategory === 'All' && currentProjectPage === 1 && projectIndex < 3 && (
+                                                            <span className="rounded-full border border-indigo-500/25 bg-indigo-500/10 px-2 py-0.5 font-mono text-[8px] font-bold uppercase tracking-wider text-indigo-500">
+                                                                Featured
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex flex-wrap items-center gap-2.5 font-mono text-[10px] uppercase tracking-wider text-slate-500 select-none">
+                                                        <span className={themeStyles.accentText}>{proj.categories.join(' + ')}</span>
+                                                        <span aria-hidden="true">•</span>
+                                                        <span className="font-bold text-amber-500">{proj.rarity}</span>
+                                                        <span aria-hidden="true">•</span>
+                                                        <span>{proj.scope}</span>
+                                                        <span aria-hidden="true">•</span>
+                                                        <span className="text-emerald-500">{proj.completion}</span>
+                                                    </div>
+                                                    <div className="hidden">
                                                         <span className={themeStyles.accentText}>{proj.categories.join(' + ')}</span>
                                                         <span>â€¢</span>
                                                         <span className="font-bold text-amber-500">{proj.rarity}</span>
@@ -1069,6 +1189,45 @@ export default function Welcome() {
                                     );
                                 })}
                             </div>
+                            {projectPageCount > 1 && (
+                                <nav className="flex flex-wrap items-center justify-between gap-3 pt-1" aria-label="Selected work pagination">
+                                    <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-slate-500">
+                                        Showing {projectPageStart + 1}–{Math.min(projectPageStart + PROJECTS_PER_PAGE, filteredProjects.length)} of {filteredProjects.length}
+                                    </span>
+                                    <div className={`flex items-center gap-1 rounded-full border p-1 ${themeStyles.border} ${themeStyles.cardBg}`}>
+                                        <button
+                                            type="button"
+                                            onClick={() => changeProjectPage(currentProjectPage - 1)}
+                                            disabled={currentProjectPage === 1}
+                                            className="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-indigo-500/10 hover:text-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 disabled:cursor-not-allowed disabled:opacity-30"
+                                            aria-label="Previous project page"
+                                        >
+                                            <ChevronLeft className="h-3.5 w-3.5" />
+                                        </button>
+                                        {Array.from({ length: projectPageCount }, (_, index) => index + 1).map((page) => (
+                                            <button
+                                                key={page}
+                                                type="button"
+                                                onClick={() => changeProjectPage(page)}
+                                                className={`flex h-8 min-w-8 items-center justify-center rounded-full px-2 font-mono text-[9px] font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 ${currentProjectPage === page ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/20' : 'text-slate-500 hover:bg-indigo-500/10 hover:text-indigo-500'}`}
+                                                aria-label={`Show project page ${page}`}
+                                                aria-current={currentProjectPage === page ? 'page' : undefined}
+                                            >
+                                                {page.toString().padStart(2, '0')}
+                                            </button>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            onClick={() => changeProjectPage(currentProjectPage + 1)}
+                                            disabled={currentProjectPage === projectPageCount}
+                                            className="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-indigo-500/10 hover:text-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 disabled:cursor-not-allowed disabled:opacity-30"
+                                            aria-label="Next project page"
+                                        >
+                                            <ChevronRight className="h-3.5 w-3.5" />
+                                        </button>
+                                    </div>
+                                </nav>
+                            )}
                         </section>
 
                         {/* SECTION 02: Combined Technical Stack Logos Grid */}
@@ -1095,6 +1254,8 @@ export default function Welcome() {
                                                 <img 
                                                     src={skill.logoUrl} 
                                                     alt={`${skill.name} Logo`} 
+                                                    loading="lazy"
+                                                    decoding="async"
                                                     className={`h-full w-full object-contain filter group-hover:brightness-110 transition-all ${
                                                         skill.name === 'GitHub' && isDark ? 'dark:invert' : ''
                                                     }`}
@@ -1120,6 +1281,8 @@ export default function Welcome() {
                                         <img 
                                             src={themeStyles.githubChartUrl} 
                                             alt="JaspherXIII GitHub Contributions Map" 
+                                            loading="lazy"
+                                            decoding="async"
                                             className="h-auto max-w-full opacity-85 hover:opacity-100 transition-opacity"
                                         />
                                     </div>
@@ -1272,15 +1435,15 @@ export default function Welcome() {
                             </button>
                             <div className={`pointer-events-auto flex items-center gap-3 rounded-full border ${themeStyles.border} ${themeStyles.cardBg} px-4 py-3 shadow-lg`}>
                                 <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-slate-500">
-                                    {activeSection} / {sectionOrder.length.toString().padStart(2, '0')}
+                                    {activeSection} / {SECTION_ORDER.length.toString().padStart(2, '0')}
                                 </span>
                                 <span className="h-3 w-px bg-slate-200 dark:bg-white/10" />
                                 <div className="flex items-center gap-1.5" aria-label="Portfolio section progress">
-                                    {sectionOrder.map((sectionId) => (
+                                    {SECTION_ORDER.map((sectionId) => (
                                         <button
                                             key={sectionId}
                                             type="button"
-                                            onClick={() => showSection(sectionId)}
+                                            onClick={() => navigateToSection(sectionId)}
                                             disabled={previousSection !== null}
                                             className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 ${activeSection === sectionId ? 'w-6 bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.65)]' : 'w-1.5 bg-slate-300 hover:bg-indigo-400 dark:bg-white/15 dark:hover:bg-indigo-400'}`}
                                             aria-label={`Show portfolio section ${sectionId}`}
@@ -1306,6 +1469,36 @@ export default function Welcome() {
                     </main>
 
                 </div>
+
+                <nav
+                    className="fixed inset-x-4 bottom-4 z-40 flex items-center justify-between rounded-2xl border border-slate-200/80 bg-white/90 p-2 shadow-2xl shadow-slate-950/15 backdrop-blur-xl dark:border-white/10 dark:bg-[#0a0c11]/90 lg:hidden"
+                    aria-label="Mobile portfolio navigation"
+                >
+                    <button
+                        type="button"
+                        onClick={showPreviousSection}
+                        className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-800 transition active:scale-95 dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
+                        aria-label="Previous portfolio section"
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                    </button>
+                    <div className="flex min-w-0 items-center gap-3 px-3">
+                        <span className="font-mono text-[9px] font-bold tracking-widest text-indigo-500">
+                            {activeSection} / {SECTION_ORDER.length.toString().padStart(2, '0')}
+                        </span>
+                        <span className="truncate font-mono text-[9px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                            {SECTION_SLUGS[activeSection]}
+                        </span>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={showNextSection}
+                        className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500 text-white shadow-lg shadow-indigo-500/25 transition active:scale-95"
+                        aria-label="Next portfolio section"
+                    >
+                        <ChevronRight className="h-4 w-4" />
+                    </button>
+                </nav>
 
             </div>
 
@@ -1383,7 +1576,7 @@ export default function Welcome() {
                                         className={`h-14 w-24 shrink-0 overflow-hidden rounded-lg border-2 transition sm:h-16 sm:w-28 ${index === lightbox.imageIndex ? 'border-indigo-500 opacity-100' : 'border-transparent opacity-50 hover:opacity-90'}`}
                                         aria-label={`View image ${index + 1}: ${image.alt}`}
                                     >
-                                        <img src={image.src} alt="" className="h-full w-full object-cover object-top" />
+                                        <img src={image.src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover object-top" />
                                     </button>
                                 ))}
                             </div>
