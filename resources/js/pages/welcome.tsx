@@ -11,12 +11,14 @@ import {
     ArrowUpRight,
     CheckCircle,
     Activity,
+    BadgeCheck,
+    Mail,
     Server,
     Shield,
     Maximize2,
     X
 } from 'lucide-react';
-import { useState, useEffect, useRef, type FormEvent } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Skill Schema
 interface Skill {
@@ -71,22 +73,16 @@ export default function Welcome() {
         return () => observer.disconnect();
     }, []);
 
-    // Form State
-    const [formSubmitted, setFormSubmitted] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-
     // Section Refs for Scroll Spy
     const section1Ref = useRef<HTMLDivElement>(null);
     const section2Ref = useRef<HTMLDivElement>(null);
     const section4Ref = useRef<HTMLDivElement>(null);
     const section5Ref = useRef<HTMLDivElement>(null);
-    const section6Ref = useRef<HTMLDivElement>(null);
     const sectionTransitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Scroll Spy
     useEffect(() => {
-        const refs = [section1Ref, section2Ref, section4Ref, section5Ref, section6Ref];
+        const refs = [section1Ref, section2Ref, section4Ref, section5Ref];
         let animationFrame: number | null = null;
 
         const updateActiveSection = () => {
@@ -571,19 +567,6 @@ export default function Welcome() {
         }
     ];
 
-    // Handle Contact Form Submit
-    const handleSaveSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        if (!formData.name || !formData.email || !formData.message) return;
-
-        setIsSaving(true);
-        setTimeout(() => {
-            setIsSaving(false);
-            setFormSubmitted(true);
-            setFormData({ name: '', email: '', message: '' });
-        }, 1200);
-    };
-
     // Color schema variables matching selected theme and mode
     const themeStyles = {
         bg: isDark ? 'bg-[#05070a]' : 'bg-[#f8fafc]',
@@ -614,7 +597,7 @@ export default function Welcome() {
         cardTitle: isDark ? 'text-white' : 'text-slate-800'
     };
 
-    const sectionOrder = ['01', '02', '03', '04', '05'];
+    const sectionOrder = ['01', '02', '03', '04'];
 
     const showSection = (sectionId: string, direction?: 'next' | 'previous') => {
         if (sectionId === activeSection || previousSection !== null) {
@@ -635,7 +618,7 @@ export default function Welcome() {
         sectionTransitionTimer.current = setTimeout(() => {
             setPreviousSection(null);
             sectionTransitionTimer.current = null;
-        }, 700);
+        }, 440);
     };
 
     const showNextSection = () => {
@@ -688,48 +671,52 @@ export default function Welcome() {
                     background: rgba(255, 255, 255, 0.1);
                 }
 
-                @keyframes section-orbit-in-next {
+                @keyframes section-shared-axis-in-next {
                     from {
                         opacity: 0;
-                        transform: rotate(12deg) translate3d(0, 2.5rem, 0) scale(0.96);
+                        filter: blur(2px);
+                        transform: translate3d(0, 3.5rem, 0) scale(0.985);
                     }
-                    45% { opacity: 1; }
                     to {
                         opacity: 1;
-                        transform: rotate(0deg) translate3d(0, 0, 0) scale(1);
+                        filter: blur(0);
+                        transform: translate3d(0, 0, 0) scale(1);
                     }
                 }
-                @keyframes section-orbit-out-next {
+                @keyframes section-shared-axis-out-next {
                     from {
                         opacity: 1;
-                        transform: rotate(0deg) translate3d(0, 0, 0) scale(1);
+                        filter: blur(0);
+                        transform: translate3d(0, 0, 0) scale(1);
                     }
-                    55% { opacity: 0.35; }
                     to {
                         opacity: 0;
-                        transform: rotate(-12deg) translate3d(0, 2.5rem, 0) scale(0.96);
+                        filter: blur(2px);
+                        transform: translate3d(0, -2.75rem, 0) scale(0.985);
                     }
                 }
-                @keyframes section-orbit-in-previous {
+                @keyframes section-shared-axis-in-previous {
                     from {
                         opacity: 0;
-                        transform: rotate(-12deg) translate3d(0, 2.5rem, 0) scale(0.96);
+                        filter: blur(2px);
+                        transform: translate3d(0, -3.5rem, 0) scale(0.985);
                     }
-                    45% { opacity: 1; }
                     to {
                         opacity: 1;
-                        transform: rotate(0deg) translate3d(0, 0, 0) scale(1);
+                        filter: blur(0);
+                        transform: translate3d(0, 0, 0) scale(1);
                     }
                 }
-                @keyframes section-orbit-out-previous {
+                @keyframes section-shared-axis-out-previous {
                     from {
                         opacity: 1;
-                        transform: rotate(0deg) translate3d(0, 0, 0) scale(1);
+                        filter: blur(0);
+                        transform: translate3d(0, 0, 0) scale(1);
                     }
-                    55% { opacity: 0.35; }
                     to {
                         opacity: 0;
-                        transform: rotate(12deg) translate3d(0, 2.5rem, 0) scale(0.96);
+                        filter: blur(2px);
+                        transform: translate3d(0, 2.75rem, 0) scale(0.985);
                     }
                 }
 
@@ -738,40 +725,42 @@ export default function Welcome() {
                         position: absolute;
                         inset: 0;
                         overflow-y: auto;
-                        padding-right: 0.75rem;
-                        padding-bottom: 5rem;
-                        will-change: transform, opacity;
-                        transform-origin: 50% 135%;
+                        padding: 2rem 2rem 6.75rem;
+                        will-change: transform, opacity, filter;
                         backface-visibility: hidden;
                     }
                     .section-panel--active {
+                        z-index: 1;
                         opacity: 1;
+                        filter: blur(0);
                         transform: translate3d(0, 0, 0);
                         pointer-events: auto;
                     }
                     .section-panel--idle {
+                        z-index: 0;
                         opacity: 0;
-                        transform: translate3d(24px, 0, 0);
+                        filter: blur(0);
+                        transform: translate3d(0, 0, 0);
                         pointer-events: none;
                     }
                     .section-panel--enter-next {
                         z-index: 2;
-                        animation: section-orbit-in-next 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                        animation: section-shared-axis-in-next 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
                         pointer-events: auto;
                     }
                     .section-panel--exit-next {
                         z-index: 1;
-                        animation: section-orbit-out-next 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                        animation: section-shared-axis-out-next 440ms cubic-bezier(0.4, 0, 0.2, 1) both;
                         pointer-events: none;
                     }
                     .section-panel--enter-previous {
                         z-index: 2;
-                        animation: section-orbit-in-previous 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                        animation: section-shared-axis-in-previous 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
                         pointer-events: auto;
                     }
                     .section-panel--exit-previous {
                         z-index: 1;
-                        animation: section-orbit-out-previous 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                        animation: section-shared-axis-out-previous 440ms cubic-bezier(0.4, 0, 0.2, 1) both;
                         pointer-events: none;
                     }
                 }
@@ -874,8 +863,9 @@ export default function Welcome() {
                                     href="https://github.com/JaspherXIII" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className={`h-8.5 w-8.5 rounded-lg ${themeStyles.cardBg} border ${themeStyles.border} hover:bg-slate-100/50 dark:hover:bg-white/[0.04] flex items-center justify-center ${themeStyles.textHeading} transition-all shadow-sm`}
+                                    className={`flex h-8.5 w-8.5 items-center justify-center rounded-lg border ${themeStyles.border} ${themeStyles.cardBg} ${themeStyles.textHeading} shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-100/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/60 dark:hover:bg-white/[0.04]`}
                                     title="GitHub"
+                                    aria-label="View GitHub profile"
                                 >
                                     <Github className="h-4 w-4" />
                                 </a>
@@ -883,10 +873,41 @@ export default function Welcome() {
                                     href="https://www.linkedin.com/in/mark-jaspher-juan-0a84b3321/" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className={`h-8.5 w-8.5 rounded-lg ${themeStyles.cardBg} border ${themeStyles.border} hover:bg-slate-100/50 dark:hover:bg-white/[0.04] flex items-center justify-center ${themeStyles.textHeading} transition-all shadow-sm`}
+                                    className={`flex h-8.5 w-8.5 items-center justify-center rounded-lg border ${themeStyles.border} ${themeStyles.cardBg} ${themeStyles.textHeading} shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#0a66c2]/50 hover:bg-[#0a66c2]/10 hover:text-[#0a66c2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0a66c2]/60`}
                                     title="LinkedIn"
+                                    aria-label="View LinkedIn profile"
                                 >
                                     <Linkedin className="h-4 w-4" />
+                                </a>
+                                <a
+                                    href="https://www.credly.com/users/mark-jaspher-juan/edit/badges/credly"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`flex h-8.5 w-8.5 items-center justify-center rounded-lg border ${themeStyles.border} ${themeStyles.cardBg} ${themeStyles.textHeading} shadow-sm transition-all hover:-translate-y-0.5 hover:border-orange-500/50 hover:bg-orange-500/10 hover:text-orange-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/60`}
+                                    title="Credly"
+                                    aria-label="View Credly badges"
+                                >
+                                    <BadgeCheck className="h-4 w-4" />
+                                </a>
+                                <a
+                                    href="mailto:devjzpher@northeasterncollege.edu.ph"
+                                    className={`flex h-8.5 w-8.5 items-center justify-center rounded-lg border ${themeStyles.border} ${themeStyles.cardBg} ${themeStyles.textHeading} shadow-sm transition-all hover:-translate-y-0.5 hover:border-cyan-500/50 hover:bg-cyan-500/10 hover:text-cyan-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/60`}
+                                    title="Email"
+                                    aria-label="Email devjzpher@northeasterncollege.edu.ph"
+                                >
+                                    <Mail className="h-4 w-4" />
+                                </a>
+                                <a
+                                    href="https://www.facebook.com/jaspher.juan"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`flex h-8.5 w-8.5 items-center justify-center rounded-lg border ${themeStyles.border} ${themeStyles.cardBg} ${themeStyles.textHeading} shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#1877f2]/50 hover:bg-[#1877f2]/10 hover:text-[#1877f2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1877f2]/60`}
+                                    title="Facebook"
+                                    aria-label="View Facebook profile"
+                                >
+                                    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4 fill-current">
+                                        <path d="M13.5 22v-9h3l.5-3.5h-3.5V7.25c0-1.02.28-1.71 1.75-1.71H17.1V2.42c-.32-.04-1.42-.14-2.7-.14-2.67 0-4.5 1.63-4.5 4.63V9.5H7v3.5h2.9v9h3.6Z" />
+                                    </svg>
                                 </a>
                             </div>
                         </div>
@@ -894,7 +915,7 @@ export default function Welcome() {
                     </header>
 
                     {/* RIGHT PANE: Circular vertical section slider on desktop */}
-                    <main className="relative lg:col-span-7 space-y-16 lg:h-[82vh] lg:space-y-0 lg:overflow-hidden">
+                    <main className="relative space-y-16 lg:col-span-7 lg:h-[82vh] lg:space-y-0 lg:overflow-hidden lg:rounded-[2rem] lg:border lg:border-slate-200/80 lg:bg-white/55 lg:shadow-[0_32px_90px_-52px_rgba(15,23,42,0.5)] lg:backdrop-blur-xl dark:lg:border-white/[0.07] dark:lg:bg-white/[0.018] dark:lg:shadow-[0_32px_90px_-48px_rgba(0,0,0,0.8)]">
                         
                         {/* SECTION 01: Interactive Collapsible Projects Accordion */}
                         <section 
@@ -1236,34 +1257,47 @@ export default function Welcome() {
                             </div>
                         </section>
 
-                        {/* SECTION 05: Minimal Checkpoint Form */}
-
-
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 hidden items-end justify-between bg-gradient-to-t from-white via-white/95 to-transparent pb-1 pt-10 dark:from-[#05070a] dark:via-[#05070a]/95 lg:flex">
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 hidden items-end justify-between rounded-b-[2rem] bg-gradient-to-t from-white via-white/95 to-transparent px-6 pb-5 pt-16 dark:from-[#080a0e] dark:via-[#080a0e]/95 lg:flex">
                             <button
                                 type="button"
                                 onClick={showPreviousSection}
                                 disabled={previousSection !== null}
-                                className={`pointer-events-auto group flex items-center gap-3 rounded-full border ${themeStyles.border} ${themeStyles.cardBg} px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest ${themeStyles.textHeading} shadow-lg transition hover:-translate-y-0.5 hover:border-indigo-500/60 disabled:cursor-wait disabled:opacity-60`}
+                                className={`pointer-events-auto group flex items-center gap-3 rounded-full border ${themeStyles.border} ${themeStyles.cardBg} px-3 py-2 font-mono text-[10px] font-bold uppercase tracking-widest ${themeStyles.textHeading} shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-500/60 hover:shadow-indigo-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 disabled:cursor-wait disabled:opacity-60`}
                                 aria-label="Show previous portfolio section"
                             >
-                                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-500 text-white transition-transform group-hover:-translate-x-0.5">
+                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-transform group-hover:-translate-x-0.5">
                                     <ChevronLeft className="h-4 w-4" />
                                 </span>
                                 Previous
                             </button>
-                            <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-slate-500">
-                                {activeSection} / {sectionOrder.length.toString().padStart(2, '0')}
-                            </span>
+                            <div className={`pointer-events-auto flex items-center gap-3 rounded-full border ${themeStyles.border} ${themeStyles.cardBg} px-4 py-3 shadow-lg`}>
+                                <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-slate-500">
+                                    {activeSection} / {sectionOrder.length.toString().padStart(2, '0')}
+                                </span>
+                                <span className="h-3 w-px bg-slate-200 dark:bg-white/10" />
+                                <div className="flex items-center gap-1.5" aria-label="Portfolio section progress">
+                                    {sectionOrder.map((sectionId) => (
+                                        <button
+                                            key={sectionId}
+                                            type="button"
+                                            onClick={() => showSection(sectionId)}
+                                            disabled={previousSection !== null}
+                                            className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 ${activeSection === sectionId ? 'w-6 bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.65)]' : 'w-1.5 bg-slate-300 hover:bg-indigo-400 dark:bg-white/15 dark:hover:bg-indigo-400'}`}
+                                            aria-label={`Show portfolio section ${sectionId}`}
+                                            aria-current={activeSection === sectionId ? 'step' : undefined}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                             <button
                                 type="button"
                                 onClick={showNextSection}
                                 disabled={previousSection !== null}
-                                className={`pointer-events-auto group flex items-center gap-3 rounded-full border ${themeStyles.border} ${themeStyles.cardBg} px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-widest ${themeStyles.textHeading} shadow-lg transition hover:-translate-y-0.5 hover:border-indigo-500/60 disabled:cursor-wait disabled:opacity-60`}
+                                className={`pointer-events-auto group flex items-center gap-3 rounded-full border ${themeStyles.border} ${themeStyles.cardBg} px-3 py-2 font-mono text-[10px] font-bold uppercase tracking-widest ${themeStyles.textHeading} shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-500/60 hover:shadow-indigo-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 disabled:cursor-wait disabled:opacity-60`}
                                 aria-label="Show next portfolio section"
                             >
                                 Next
-                                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-500 text-white transition-transform group-hover:translate-x-0.5">
+                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-transform group-hover:translate-x-0.5">
                                     <ChevronRight className="h-4 w-4" />
                                 </span>
                             </button>
