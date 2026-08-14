@@ -635,7 +635,7 @@ export default function Welcome() {
         sectionTransitionTimer.current = setTimeout(() => {
             setPreviousSection(null);
             sectionTransitionTimer.current = null;
-        }, 520);
+        }, 700);
     };
 
     const showNextSection = () => {
@@ -689,20 +689,48 @@ export default function Welcome() {
                 }
 
                 @keyframes section-orbit-in-next {
-                    from { opacity: 0; transform: translate3d(24px, 0, 0); }
-                    to { opacity: 1; transform: translate3d(0, 0, 0); }
+                    from {
+                        opacity: 0;
+                        transform: rotate(12deg) translate3d(0, 2.5rem, 0) scale(0.96);
+                    }
+                    45% { opacity: 1; }
+                    to {
+                        opacity: 1;
+                        transform: rotate(0deg) translate3d(0, 0, 0) scale(1);
+                    }
                 }
                 @keyframes section-orbit-out-next {
-                    from { opacity: 1; transform: translate3d(0, 0, 0); }
-                    to { opacity: 0; transform: translate3d(-24px, 0, 0); }
+                    from {
+                        opacity: 1;
+                        transform: rotate(0deg) translate3d(0, 0, 0) scale(1);
+                    }
+                    55% { opacity: 0.35; }
+                    to {
+                        opacity: 0;
+                        transform: rotate(-12deg) translate3d(0, 2.5rem, 0) scale(0.96);
+                    }
                 }
                 @keyframes section-orbit-in-previous {
-                    from { opacity: 0; transform: translate3d(-24px, 0, 0); }
-                    to { opacity: 1; transform: translate3d(0, 0, 0); }
+                    from {
+                        opacity: 0;
+                        transform: rotate(-12deg) translate3d(0, 2.5rem, 0) scale(0.96);
+                    }
+                    45% { opacity: 1; }
+                    to {
+                        opacity: 1;
+                        transform: rotate(0deg) translate3d(0, 0, 0) scale(1);
+                    }
                 }
                 @keyframes section-orbit-out-previous {
-                    from { opacity: 1; transform: translate3d(0, 0, 0); }
-                    to { opacity: 0; transform: translate3d(24px, 0, 0); }
+                    from {
+                        opacity: 1;
+                        transform: rotate(0deg) translate3d(0, 0, 0) scale(1);
+                    }
+                    55% { opacity: 0.35; }
+                    to {
+                        opacity: 0;
+                        transform: rotate(12deg) translate3d(0, 2.5rem, 0) scale(0.96);
+                    }
                 }
 
                 @media (min-width: 1024px) {
@@ -713,6 +741,7 @@ export default function Welcome() {
                         padding-right: 0.75rem;
                         padding-bottom: 5rem;
                         will-change: transform, opacity;
+                        transform-origin: 50% 135%;
                         backface-visibility: hidden;
                     }
                     .section-panel--active {
@@ -726,19 +755,23 @@ export default function Welcome() {
                         pointer-events: none;
                     }
                     .section-panel--enter-next {
-                        animation: section-orbit-in-next 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+                        z-index: 2;
+                        animation: section-orbit-in-next 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
                         pointer-events: auto;
                     }
                     .section-panel--exit-next {
-                        animation: section-orbit-out-next 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+                        z-index: 1;
+                        animation: section-orbit-out-next 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
                         pointer-events: none;
                     }
                     .section-panel--enter-previous {
-                        animation: section-orbit-in-previous 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+                        z-index: 2;
+                        animation: section-orbit-in-previous 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
                         pointer-events: auto;
                     }
                     .section-panel--exit-previous {
-                        animation: section-orbit-out-previous 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+                        z-index: 1;
+                        animation: section-orbit-out-previous 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
                         pointer-events: none;
                     }
                 }
