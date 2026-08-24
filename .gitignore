@@ -6,6 +6,7 @@
 .phpunit.result.cache
 /.fleet
 /.idea
+/.private
 /.nova
 /.phpunit.cache
 /.vscode
