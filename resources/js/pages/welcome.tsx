@@ -41,6 +41,7 @@ interface Project {
     categories: string[];
     github?: string;
     demo?: string;
+    playStore?: string;
     rarity: string;
     scope: string;
     completion: string;
@@ -325,6 +326,27 @@ export default function Welcome() {
             completion: 'Completed',
         },
         {
+            id: 'nc-astra',
+            title: 'NC Astra — AI Assistant',
+            objective: 'Automate and streamline how Northeastern College discovers, prepares, reviews, and publishes news and announcements.',
+            walkthrough:
+                'Built an AI-powered editorial command center that scans approved Facebook pages and external sources with Playwright, queues content for human review, and syncs approved stories to the college website. Astra combines a local Ollama-powered assistant with Faster-Whisper voice recognition, ElevenLabs or local text-to-speech, a PySide6 desktop interface, and a Flask and React web dashboard while keeping editors in control of every approval, edit, rejection, and publication.',
+            images: [
+                {
+                    src: '/images/projects/nc%20ai/1.png',
+                    alt: 'NC Astra voice-enabled AI assistant interface',
+                },
+                {
+                    src: '/images/projects/nc%20ai/2.png',
+                    alt: 'NC Astra news monitoring and human review dashboard',
+                },
+            ],
+            categories: ['AI Systems'],
+            rarity: 'AI Editorial System',
+            scope: 'Northeastern College',
+            completion: 'Completed',
+        },
+        {
             id: 'nfc-bridge',
             title: 'NFC Bridge — USB & API',
             objective:
@@ -338,9 +360,11 @@ export default function Welcome() {
                 },
             ],
             categories: ['Mobile Apps'],
+            demo: 'https://nfcbridge.jzpher.online/',
+            playStore: 'https://play.google.com/store/apps/details?id=com.jzpher.nfcbridge',
             rarity: 'Developer Utility',
             scope: 'Independent Project',
-            completion: 'Completed',
+            completion: 'Live on Google Play',
         },
         {
             id: 'navia',
@@ -491,7 +515,7 @@ export default function Welcome() {
         },
     ];
 
-    const projectCategories = ['All', 'Web Systems', 'Websites', 'Mobile Apps'];
+    const projectCategories = ['All', 'AI Systems', 'Web Systems', 'Websites', 'Mobile Apps'];
     const filteredProjects =
         selectedProjectCategory === 'All' ? projects : projects.filter((project) => project.categories.includes(selectedProjectCategory));
     const projectPageCount = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
@@ -1525,6 +1549,16 @@ export default function Welcome() {
                                                                 className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold tracking-wider uppercase ${themeStyles.textHeading} font-mono hover:opacity-80`}
                                                             >
                                                                 Visit live site <ArrowUpRight className="h-3.5 w-3.5" />
+                                                            </a>
+                                                        )}
+                                                        {proj.playStore && (
+                                                            <a
+                                                                href={proj.playStore}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className={`inline-flex items-center gap-1.5 text-[10.5px] font-bold tracking-wider uppercase ${themeStyles.textHeading} font-mono hover:opacity-80`}
+                                                            >
+                                                                Get it on Google Play <ArrowUpRight className="h-3.5 w-3.5" />
                                                             </a>
                                                         )}
                                                     </div>
