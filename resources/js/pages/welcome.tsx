@@ -270,6 +270,29 @@ export default function Welcome() {
             completion: 'Active maintenance',
         },
         {
+            id: 'stgofare',
+            title: 'STGO Fare — Santiago City Tricycle Fare System',
+            objective:
+                'Help Santiago City commuters calculate transparent tricycle fares and track rides using the official fare matrix.',
+            walkthrough:
+                'Developed a mobile fare companion with regular and discounted passenger rates, GPS-based live ride metering, route tracking, fare summaries, trip history, and offline-ready fare guidance in a lightweight, ad-free experience.',
+            images: [
+                {
+                    src: '/images/projects/stgofare/1.png',
+                    alt: 'STGO Fare website showing the Santiago City tricycle fare calculator and mobile app preview',
+                },
+                {
+                    src: '/images/projects/stgofare/2.png',
+                    alt: 'STGO Fare mobile app showing passenger rates, live GPS ride tracking, and app information',
+                },
+            ],
+            categories: ['Mobile Apps'],
+            demo: 'https://stgofare.vercel.app/',
+            rarity: 'Public Utility',
+            scope: 'Santiago City',
+            completion: 'Live',
+        },
+        {
             id: 'nc-website',
             title: 'Northeastern College Website',
             objective:
